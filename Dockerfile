@@ -9,6 +9,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/ruby:0-${RUBY}-bullseye
 # The value is a comma-separated list of allowed domains 
 ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 
+RUN gem install rails
+
 # [Choice] Node.js version: lts/*, 16, 14, 12, 10
 # ARG NODE_VERSION="lts/*"
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"
@@ -33,7 +35,7 @@ WORKDIR /usr/local/redmine
 RUN chown -R vscode .
 COPY database.yml /usr/local/redmine/config/database.yml
 
-RUN rm -rf .git
+RUN mv .git .git.sv
 # RUN echo "gem 'ruby-debug-ide'" >> Gemfile
 RUN echo "gem 'debug'" >> Gemfile
 RUN echo "gem 'rufo'" >> Gemfile
@@ -43,11 +45,12 @@ RUN bundle install
 RUN bundle exec rake db:migrate
 RUN bundle exec rake db:migrate RAILS_ENV=test
 RUN mkdir -p .vscode
+COPY launch.json /usr/local/redmine/.vscode/
 
 USER root
 
 RUN sed -i "s/^end/  config.hosts.clear if config.respond_to?(:hosts)\nend/" config/environments/development.rb 
 
-COPY post-create.sh /post-create.sh
+#COPY post-create.sh /post-create.sh
 
 WORKDIR /workspaces

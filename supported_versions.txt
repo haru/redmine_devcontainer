@@ -1,0 +1,20 @@
+# Redmine_version ruby_version
+4.2-stable 2.4
+4.2-stable 2.5
+4.2-stable 2.6
+4.2-stable 2.7
+5.0-stable 2.5
+5.0-stable 2.6
+5.0-stable 2.7
+5.0-stable 3.0
+5.0-stable 3.1
+
+5.1-stable 2.7
+5.1-stable 3.0
+5.1-stable 3.1
+5.1-stable 3.2
+
+master 2.7
+master 3.0
+master 3.1
+master 3.2
