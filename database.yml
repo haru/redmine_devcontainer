@@ -32,3 +32,8 @@ test:
   port: <%= ENV['DB_PORT'] || '' %>
 
 
+dummy:
+  adapter: mysql2
+
+dummy2:
+  adapter: postgresql
