@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/ruby:0-${RUBY}-bullseye
 # The value is a comma-separated list of allowed domains 
 ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 
-RUN gem install rails
+#RUN gem install rails
 
 # [Choice] Node.js version: lts/*, 16, 14, 12, 10
 # ARG NODE_VERSION="lts/*"
