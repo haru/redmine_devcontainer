@@ -17,8 +17,9 @@ fi
 
 CONTAINER_VERSION="${REDMINE}-ruby${RUBY}"
 docker buildx build -t haru/redmine_devcontainer:${CONTAINER_VERSION} . \
-    --cache-from image:buildcache-arm64 --cache-from image:buildcache-amd64 \
     --build-arg RUBY=$RUBY \
     --build-arg REDMINE_VERSION=$REDMINE \
     --platform linux/amd64,linux/arm64/v8 \
     --output=type=image,push=true
+
+#    --cache-from image:buildcache-arm64 --cache-from image:buildcache-amd64 \
