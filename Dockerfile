@@ -44,6 +44,7 @@ USER vscode
 RUN bundle install
 RUN bundle exec rake db:migrate
 RUN bundle exec rake db:migrate RAILS_ENV=test
+RUN bundle exec rake test:scm:setup:all 
 RUN mkdir -p .vscode
 COPY launch.json /usr/local/redmine/.vscode/
 
