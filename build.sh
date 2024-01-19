@@ -16,7 +16,7 @@ then
 fi
 
 CONTAINER_VERSION="${REDMINE}-ruby${RUBY}"
-docker buildx build -t haru/redmine_devcontainer:${CONTAINER_VERSION} . \
+docker buildx build --no-cache -t haru/redmine_devcontainer:${CONTAINER_VERSION} . \
     --build-arg RUBY=$RUBY \
     --build-arg REDMINE_VERSION=$REDMINE \
     --platform linux/amd64,linux/arm64/v8 \
