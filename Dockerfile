@@ -28,6 +28,7 @@ ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 RUN apt-get update
 RUN apt-get install -y imagemagick git-flow
 
+ENV REDMINE_ROOT=/usr/local/redmine
 WORKDIR /usr/local
 ARG REDMINE_VERSION=master
 RUN git clone https://github.com/redmine/redmine.git -b ${REDMINE_VERSION}
