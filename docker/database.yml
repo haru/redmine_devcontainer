@@ -1,0 +1,39 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+production:
+  adapter: <%= ENV['DB'] || 'sqlite3' %>
+  encoding: utf8
+  database: <%= ENV['DB_NAME'] || 'db/redmine.sqlite3' %>
+  username: <%= ENV['DB_USERNAME']  || '' %>
+  password: <%= ENV['DB_PASSWORD']  || '' %>
+  host: <%= ENV['DB_HOST'] || 'localhost' %>
+  port: <%= ENV['DB_PORT'] || '' %>
+
+development:
+  adapter: <%= ENV['DB'] || 'sqlite3' %>
+  encoding: utf8
+  database: <%= ENV['DB_NAME'] || 'db/redmine.sqlite3' %>
+  username: <%= ENV['DB_USERNAME']  || '' %>
+  password: <%= ENV['DB_PASSWORD']  || '' %>
+  host: <%= ENV['DB_HOST'] || 'localhost' %>
+  port: <%= ENV['DB_PORT'] || '' %>
+
+test:
+  adapter: <%= ENV['DB'] || 'sqlite3' %>
+  encoding: utf8
+  database: <%= ENV['DB_NAME'] || 'db/redmine.sqlite3' %>_test
+  username: <%= ENV['DB_USERNAME']  || '' %>
+  password: <%= ENV['DB_PASSWORD']  || '' %>
+  host: <%= ENV['DB_HOST'] || 'localhost' %>
+  port: <%= ENV['DB_PORT'] || '' %>
+
+
+dummy:
+  adapter: mysql2
+
+dummy2:
+  adapter: postgresql

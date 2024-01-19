@@ -1,0 +1,41 @@
+name: build_archive
+on:
+  push:
+    branches-ignore:
+      - '**'
+    tags:
+      - '**'
+env:
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set version
+        id: version
+        run: |
+          REPOSITORY=$(echo ${{ github.repository }} | sed -e "s#.*/##")
+          VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
+          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "filename=$REPOSITORY-$VERSION" >> $GITHUB_ENV
+          echo "plugin=$REPOSITORY" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+      - name: Archive
+        run: |
+          sh -x dot_devcontainer/build_archive.sh 
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.version }}
+          release_name: ${{ env.version }}
+          body: ''
+          draft: false
+          prerelease: true
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dot_devcontainer/dot_devcontainer.tgz
