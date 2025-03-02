@@ -15,9 +15,16 @@ then
   RUBY=$2
 fi
 
+if [ "$RUBY" = 3.0 ]
+then
+  RUBY_TAG=3.0-bullseye
+else
+  RUBY_TAG=${RUBY}-bookworm
+fi
+
 CONTAINER_VERSION="${REDMINE}-ruby${RUBY}"
 docker buildx build --no-cache -t haru/redmine_devcontainer:${CONTAINER_VERSION} . \
-    --build-arg RUBY=$RUBY \
+    --build-arg RUBY_TAG=$RUBY_TAG \
     --build-arg REDMINE_VERSION=$REDMINE \
     --platform linux/amd64,linux/arm64/v8 \
     --output=type=image,push=true

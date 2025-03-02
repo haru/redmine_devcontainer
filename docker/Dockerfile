@@ -1,20 +1,21 @@
-ARG RUBY=3.2-bullseye
-FROM mcr.microsoft.com/vscode/devcontainers/ruby:0-${RUBY}-bullseye
+ARG RUBY_TAG=3.2-bullseye
+FROM mcr.microsoft.com/vscode/devcontainers/ruby:${RUBY_TAG}
 
 ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 
-RUN apt-get update
-RUN apt-get install -y imagemagick git-flow
+RUN apt-get update && apt-get install -y imagemagick git-flow \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV REDMINE_ROOT=/usr/local/redmine
 WORKDIR /usr/local
 ARG REDMINE_VERSION=master
-RUN git clone https://github.com/redmine/redmine.git -b ${REDMINE_VERSION}
-WORKDIR /usr/local/redmine
-RUN chown -R vscode .
-COPY database.yml /usr/local/redmine/config/database.yml
+RUN git clone https://github.com/redmine/redmine.git -b ${REDMINE_VERSION} \
+    && chown -R vscode /usr/local/redmine \
+    && mv /usr/local/redmine/.git /usr/local/redmine/.git.sv
 
-RUN mv .git .git.sv
+WORKDIR /usr/local/redmine
+COPY database.yml /usr/local/redmine/config/database.yml
 
 RUN echo "gem 'debug'" >> Gemfile
 RUN echo "gem 'rufo'" >> Gemfile
