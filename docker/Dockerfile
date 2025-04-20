@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/ruby:${RUBY_TAG}
 
 ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 
-RUN apt-get update && apt-get install -y imagemagick git-flow \
+RUN apt-get update && apt-get install -y imagemagick git-flow clang \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
