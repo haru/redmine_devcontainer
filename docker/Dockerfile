@@ -20,6 +20,8 @@ COPY database.yml /usr/local/redmine/config/database.yml
 RUN echo "gem 'debug'" >> Gemfile
 RUN echo "gem 'rufo'" >> Gemfile
 ENV DB=sqlite3
+RUN bundle config set --local path vendor/bundle
+RUN mkdir -p vendor/bundle && chown -R vscode:vscode vendor/bundle
 USER vscode
 RUN bundle install
 RUN bundle exec rake db:migrate
