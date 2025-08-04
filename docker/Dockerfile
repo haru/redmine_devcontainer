@@ -1,10 +1,12 @@
-ARG RUBY=3.2-bullseye
-FROM mcr.microsoft.com/vscode/devcontainers/ruby:0-${RUBY}-bullseye
+ARG RUBY=3.2
+FROM ruby:${RUBY}
 
 ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 
 RUN apt-get update
-RUN apt-get install -y imagemagick git-flow
+RUN apt-get install -y build-essential imagemagick git-flow
+
+RUN useradd -m -d /workspaces -s /bin/bash vscode
 
 ENV REDMINE_ROOT=/usr/local/redmine
 WORKDIR /usr/local
@@ -19,6 +21,7 @@ RUN mv .git .git.sv
 RUN echo "gem 'debug'" >> Gemfile
 RUN echo "gem 'rufo'" >> Gemfile
 ENV DB=sqlite3
+
 USER vscode
 RUN bundle install
 RUN bundle exec rake db:migrate
