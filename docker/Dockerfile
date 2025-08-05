@@ -3,8 +3,12 @@ FROM ruby:${RUBY}
 
 ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 
-RUN apt-get update
-RUN apt-get install -y build-essential imagemagick git-flow
+RUN apt-get update && apt-get install -y build-essential \
+    imagemagick git-flow \
+    sudo \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -d /workspaces -s /bin/bash vscode
 
@@ -31,6 +35,7 @@ RUN mkdir -p .vscode
 COPY launch.json /usr/local/redmine/.vscode/
 
 USER root
+RUN chown -R vscode:vscode /usr/local/redmine/.vscode
 
 RUN sed -i "s/^end/  config.hosts.clear if config.respond_to?(:hosts)\nend/" config/environments/development.rb 
 
