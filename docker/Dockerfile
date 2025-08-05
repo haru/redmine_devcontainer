@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -d /workspaces -s /bin/bash vscode
+RUN echo "vscode ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/vscode
 
 ENV REDMINE_ROOT=/usr/local/redmine
 WORKDIR /usr/local
