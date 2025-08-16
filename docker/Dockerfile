@@ -6,6 +6,9 @@ ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 RUN apt-get update && apt-get install -y build-essential \
     imagemagick git-flow \
     sudo \
+    vim \
+    gawk \
+    less \
     && apt-get clean \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
@@ -23,11 +26,12 @@ COPY database.yml /usr/local/redmine/config/database.yml
 
 RUN mv .git .git.sv
 
-RUN echo "gem 'debug'" >> Gemfile
-RUN echo "gem 'rufo'" >> Gemfile
+COPY Gemfile.local /usr/local/redmine/Gemfile.local
+
 ENV DB=sqlite3
 
 USER vscode
+COPY bashrc /workspaces/.bashrc
 RUN bundle install
 RUN bundle exec rake db:migrate
 RUN bundle exec rake db:migrate RAILS_ENV=test
