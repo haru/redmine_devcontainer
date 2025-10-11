@@ -33,6 +33,14 @@ ENV DB=sqlite3
 
 USER vscode
 COPY bashrc /workspaces/.bashrc
+USER root
+RUN chown vscode:vscode /workspaces/.bashrc || true
+RUN mkdir -p /home/vscode && \
+    echo 'if [ -f /workspaces/.bashrc ]; then' > /home/vscode/.bash_profile && \
+    echo '  . /workspaces/.bashrc' >> /home/vscode/.bash_profile && \
+    echo 'fi' >> /home/vscode/.bash_profile && \
+    chown vscode:vscode /home/vscode/.bash_profile || true
+USER vscode
 RUN bundle install
 RUN bundle exec rake db:migrate
 RUN bundle exec rake db:migrate RAILS_ENV=test
