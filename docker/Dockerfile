@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y build-essential \
     sudo \
     vim \
     gawk \
+    curl \
     less \
     bash-completion \
     && apt-get clean \
@@ -30,8 +31,11 @@ RUN mv .git .git.sv
 COPY Gemfile.local /usr/local/redmine/Gemfile.local
 
 ENV DB=sqlite3
+ENV NVM_DIR=/workspaces/.nvm
 
 USER vscode
+RUN bash -lc "set -eo pipefail; curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash"
+RUN bash -lc "set -eo pipefail; . \"${NVM_DIR}/nvm.sh\" && nvm install --lts && nvm alias default 'lts/*'"
 COPY bashrc /workspaces/.bashrc
 USER root
 RUN chown vscode:vscode /workspaces/.bashrc || true
