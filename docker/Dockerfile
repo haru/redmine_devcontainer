@@ -1,5 +1,6 @@
 ARG RUBY=3.2
-FROM ruby:${RUBY}
+ARG DEBIAN=trixie
+FROM ruby:${RUBY}-${DEBIAN}
 
 ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
 
@@ -26,8 +27,6 @@ WORKDIR /usr/local/redmine
 RUN chown -R vscode .
 COPY database.yml /usr/local/redmine/config/database.yml
 
-RUN mv .git .git.sv
-
 COPY Gemfile.local /usr/local/redmine/Gemfile.local
 
 ENV DB=sqlite3
@@ -51,11 +50,23 @@ RUN bundle exec rake db:migrate RAILS_ENV=test
 RUN bundle exec rake test:scm:setup:all 
 RUN mkdir -p .vscode
 COPY launch.json /usr/local/redmine/.vscode/
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
 
 USER root
 RUN chown -R vscode:vscode /usr/local/redmine/.vscode
 
 RUN sed -i "s/^end/  config.hosts.clear if config.respond_to?(:hosts)\nend/" config/environments/development.rb 
+
+RUN (type -p wget >/dev/null || ( apt-get update &&  apt-get install wget -y)) \
+    &&  mkdir -p -m 755 /etc/apt/keyrings \
+    && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    && cat $out |  tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+    &&  chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" |  tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    &&  apt-get update \
+    &&  apt-get install gh -y
 
 
 WORKDIR /workspaces

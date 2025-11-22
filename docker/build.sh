@@ -3,7 +3,7 @@ cd `dirname $0`
 
 if [ -z "$1" ]
 then
-    echo "Usage: build.sh REDMINE_VERSION [RUBY_VERSION]" >&2
+    echo "Usage: build.sh REDMINE_VERSION [RUBY_VERSION] [DEBIAN]" >&2
     exit 1
 fi
 
@@ -15,10 +15,17 @@ then
   RUBY=$2
 fi
 
+DEBIAN=trixie
+if [ -n "$3" ]
+then
+  DEBIAN=$3
+fi
+
 CONTAINER_VERSION="${REDMINE}-ruby${RUBY}"
 docker buildx build --no-cache -t haru/redmine_devcontainer:${CONTAINER_VERSION} . \
     --build-arg RUBY=$RUBY \
     --build-arg REDMINE_VERSION=$REDMINE \
+    --build-arg DEBIAN=$DEBIAN \
     --platform linux/amd64,linux/arm64/v8 \
     --output=type=image,push=true
 
