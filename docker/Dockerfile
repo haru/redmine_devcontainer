@@ -51,7 +51,7 @@ RUN bundle exec rake test:scm:setup:all
 RUN mkdir -p .vscode
 COPY launch.json /usr/local/redmine/.vscode/
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN curl -LsSf https://astral.sh/uv/install.sh | bash
 
 
 USER root
