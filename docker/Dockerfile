@@ -54,6 +54,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | b
 RUN curl -LsSf https://astral.sh/uv/install.sh | bash
 
 
+
 USER root
 RUN chown -R vscode:vscode /usr/local/redmine/.vscode
 
@@ -68,5 +69,5 @@ RUN (type -p wget >/dev/null || ( apt-get update &&  apt-get install wget -y)) \
     &&  apt-get update \
     &&  apt-get install gh -y
 
-
+RUN cp /workspaces/.bashrc /.basrc.backup
 WORKDIR /workspaces
