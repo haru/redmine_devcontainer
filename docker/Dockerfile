@@ -69,5 +69,5 @@ RUN (type -p wget >/dev/null || ( apt-get update &&  apt-get install wget -y)) \
     &&  apt-get update \
     &&  apt-get install gh -y
 
-RUN cp /workspaces/.bashrc /.bashrc.backup
 WORKDIR /workspaces
+RUN tar cvfz /.home.tgz .nvm .local .bashrc
