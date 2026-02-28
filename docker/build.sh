@@ -23,7 +23,7 @@ fi
 
 CONTAINER_VERSION="${REDMINE}-ruby${RUBY}"
 docker buildx build --no-cache -t haru/redmine_devcontainer:${CONTAINER_VERSION} . \
-    --build-arg RUBY_TAG=$RUBY_TAG \
+    --build-arg RUBY=$RUBY \
     --build-arg REDMINE_VERSION=$REDMINE \
     --build-arg DEBIAN=$DEBIAN \
     --platform linux/amd64,linux/arm64/v8 \

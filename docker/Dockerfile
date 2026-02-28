@@ -22,9 +22,10 @@ RUN echo "vscode ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/vscode
 ENV REDMINE_ROOT=/usr/local/redmine
 WORKDIR /usr/local
 ARG REDMINE_VERSION=master
-RUN git clone https://github.com/redmine/redmine.git -b ${REDMINE_VERSION} \
-    && chown -R vscode /usr/local/redmine \
-    && mv /usr/local/redmine/.git /usr/local/redmine/.git.sv
+RUN git clone https://github.com/redmine/redmine.git -b ${REDMINE_VERSION}
+WORKDIR /usr/local/redmine
+RUN chown -R vscode .
+COPY database.yml /usr/local/redmine/config/database.yml
 
 COPY Gemfile.local /usr/local/redmine/Gemfile.local
 
