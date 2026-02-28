@@ -8,6 +8,9 @@ on:
       - "docker/**"
       - ".github/workflows/release.yml"
   workflow_dispatch:
+permissions:
+  contents: read
+
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/redmine_devcontainer
 jobs:
