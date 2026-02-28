@@ -9,12 +9,9 @@ This repository builds Docker-based development environments for Redmine plugin 
 ## Build Commands
 
 ```bash
-# Build and push a multi-arch image (amd64 + arm64) for a specific version combination
+# Build and push a single version combination locally (maintainer use)
 bash docker/build.sh 6.1-stable 3.2          # Redmine 6.1-stable, Ruby 3.2
 bash docker/build.sh 6.1-stable 3.2 trixie   # explicit Debian version
-
-# Build all supported version combinations (reads docker/supported_versions.conf)
-bash docker/build_all_versions.sh
 
 # Validate locally without pushing (before running build.sh)
 docker buildx build --load docker/
@@ -22,6 +19,9 @@ docker buildx build --load docker/
 # Package the .devcontainer bundle for distribution
 bash dot_devcontainer/build_archive.sh       # outputs dot_devcontainer/dot_devcontainer.tgz
 ```
+
+> **Note:** Building all supported version combinations is handled automatically by GitHub Actions
+> (`.github/workflows/release.yml`). There is no need to run them manually.
 
 ## Testing (inside a built container)
 
@@ -35,14 +35,16 @@ bundle exec rake test TEST=plugins/your_plugin_test.rb
 - `docker/` — Dockerfile and build scripts for the base devcontainer image
   - `Dockerfile` — builds `ruby:<version>-<debian>`, installs Redmine, gems, Node.js (via nvm), GitHub CLI, and debugging tools
   - `supported_versions.conf` — matrix of tested Redmine/Ruby/Debian combinations; update this when adding version support
-  - `build.sh` / `build_all_versions.sh` — multi-arch build pipeline
+  - `build.sh` — local single-version build script (multi-arch via QEMU)
 - `dot_devcontainer/` — assets packaged into the distributable `.tgz`
   - `.devcontainer/devcontainer.json` — VS Code dev container config with extensions
   - `.devcontainer/docker-compose.yml` — app + postgres + mysql services
   - `.devcontainer/post-create.sh` — symlinks plugin, installs gems, migrates all three databases
   - `.devcontainer/plugin_generator.sh` — generates new Redmine plugin boilerplate
   - `build_archive.sh` — packages `.devcontainer/` into `dot_devcontainer.tgz`
-- `.github/workflows/release.yml` — on git tag, builds archive and uploads to GitHub Releases
+- `.github/workflows/release.yml` — builds archive + Docker images; triggers on push to `main`/`develop` (`docker/**`), tags, and manual dispatch
+- `docs/` — design documents
+  - `github-actions-docker-build.md` — design specification for the GitHub Actions Docker build workflow
 
 ## Coding Conventions
 
@@ -53,4 +55,12 @@ bundle exec rake test TEST=plugins/your_plugin_test.rb
 
 ## Release Process
 
-Tag a commit to trigger the GitHub Actions release workflow, which automatically runs `build_archive.sh` and uploads `dot_devcontainer.tgz` to the GitHub Release.
+Tag a commit to trigger the GitHub Actions release workflow (`.github/workflows/release.yml`), which:
+
+1. Runs `build_archive.sh` and uploads `dot_devcontainer.tgz` to the GitHub Release as a draft
+2. Builds all Docker images in `supported_versions.conf` for both `amd64` and `arm64` using native GitHub-hosted runners
+3. Merges the per-arch images into multi-arch manifests and pushes them to DockerHub
+
+Build failures are notified via Slack (`SLACK_WEBHOOK_URL` secret).
+
+To add a new version combination, update `docker/supported_versions.conf` and add the corresponding entry to the matrix in `.github/workflows/release.yml`.
