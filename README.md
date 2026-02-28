@@ -21,11 +21,17 @@ A tool that builds a development environment for Redmine plugins using GitHub Co
 
 All images are multi-arch (amd64 + arm64) and are built and pushed to DockerHub automatically via GitHub Actions.
 
-## How to setup
+## How to set up
 
 ### If you already have your plugin code
 
-Download the latest `dot_devcontainer.tgz` from https://github.com/haru/redmine_devcontainer/releases .
+Clone or download this repository, then run the following command to generate `dot_devcontainer.tgz`:
+
+```shell
+$ bash dot_devcontainer/build_archive.sh
+```
+
+Copy `dot_devcontainer/dot_devcontainer.tgz` to your plugin directory and extract it:
 
 ```shell
 $ cd root_directory_of_your_plugin
@@ -49,7 +55,7 @@ Commit and push to GitHub, then open GitHub Codespaces (or reopen in VS Code Dev
 ### If you don't have your plugin yet
 
 1. Create a new GitHub repository and open GitHub Codespaces.
-2. Download the latest `dot_devcontainer.tgz` from https://github.com/haru/redmine_devcontainer/releases .
+2. Clone or download this repository and run `bash dot_devcontainer/build_archive.sh` to generate `dot_devcontainer.tgz`. Copy `dot_devcontainer/dot_devcontainer.tgz` to your plugin directory and extract it:
 
 ```shell
 $ cd root_directory_of_your_plugin

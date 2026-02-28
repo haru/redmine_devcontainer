@@ -7,8 +7,8 @@
 
 ## Build, Test, and Development Commands
 - `bash docker/build.sh 6.1-stable 3.2` builds and pushes a multi-arch devcontainer image for the named Redmine and Ruby versions.
-- `bash docker/build_all_versions.sh` iterates the versions listed in `docker/supported_versions.conf` and builds each image.
-- `bash dot_devcontainer/build_archive.sh` refreshes the distributable `dot_devcontainer.tgz` after you modify `.devcontainer` assets.
+- Building all version combinations is handled automatically by GitHub Actions (`.github/workflows/release.yml`); there is no need to run them manually.
+- `bash dot_devcontainer/build_archive.sh` refreshes the distributable `dot_devcontainer.tgz` after you modify `.devcontainer` assets. This is not automated by CI/CD and must be run manually.
 
 ## Coding Style & Naming Conventions
 - Shell scripts: prefer POSIX sh, four-space indents, and `set -euo pipefail` when adding new entry points.
@@ -26,5 +26,5 @@
 - Include screenshots or logs if the change affects developer experience or container boot behavior.
 
 ## Devcontainer Usage Tips
-- After cloning the target plugin, extract `dot_devcontainer.tgz` at the repository root so Codespaces picks up the configuration automatically.
+- Run `bash dot_devcontainer/build_archive.sh` to generate `dot_devcontainer.tgz`, then extract it at the target plugin's repository root so Codespaces picks up the configuration automatically.
 - Use the generated `.vscode/launch.json` inside the container to attach debuggers to the Rails server during plugin development.

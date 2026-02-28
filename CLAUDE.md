@@ -42,9 +42,17 @@ bundle exec rake test TEST=plugins/your_plugin_test.rb
   - `.devcontainer/post-create.sh` — symlinks plugin, installs gems, migrates all three databases
   - `.devcontainer/plugin_generator.sh` — generates new Redmine plugin boilerplate
   - `build_archive.sh` — packages `.devcontainer/` into `dot_devcontainer.tgz`
-- `.github/workflows/release.yml` — builds and pushes Docker images; triggers on push to `main`/`develop` when `docker/**` changes, and on manual dispatch
+- `.github/workflows/release.yml` — builds and pushes Docker images; triggers on push to `main`/`develop` when `docker/**` or `.github/workflows/release.yml` changes, and on manual dispatch
 - `docs/` — design documents
   - `github-actions-docker-build.md` — design specification for the GitHub Actions Docker build workflow
+
+## Local Developer Setup
+
+`.claude/settings.local.json` is git-ignored (developer-local). To allow Claude Code to run git commands without prompting, copy the example and adjust as needed:
+
+```bash
+cp .claude/settings.local.json.example .claude/settings.local.json
+```
 
 ## Coding Conventions
 
@@ -63,3 +71,5 @@ Pushing changes to `docker/**` or `.github/workflows/release.yml` on `main`/`dev
 Build failures are notified via Slack (`SLACK_WEBHOOK_URL` secret).
 
 To add a new version combination, update `docker/supported_versions.conf` and add the corresponding entry to the matrix in `.github/workflows/release.yml`.
+
+The `dot_devcontainer.tgz` archive is **not** produced or published automatically by CI/CD. Run `bash dot_devcontainer/build_archive.sh` manually to generate `dot_devcontainer/dot_devcontainer.tgz` when the `.devcontainer` assets change and a new distributable is needed.
