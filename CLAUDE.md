@@ -42,7 +42,7 @@ bundle exec rake test TEST=plugins/your_plugin_test.rb
   - `.devcontainer/post-create.sh` — symlinks plugin, installs gems, migrates all three databases
   - `.devcontainer/plugin_generator.sh` — generates new Redmine plugin boilerplate
   - `build_archive.sh` — packages `.devcontainer/` into `dot_devcontainer.tgz`
-- `.github/workflows/release.yml` — builds archive + Docker images; triggers on push to `main`/`develop` (`docker/**`), tags, and manual dispatch
+- `.github/workflows/release.yml` — builds and pushes Docker images; triggers on push to `main`/`develop` when `docker/**` changes, and on manual dispatch
 - `docs/` — design documents
   - `github-actions-docker-build.md` — design specification for the GitHub Actions Docker build workflow
 
@@ -53,13 +53,12 @@ bundle exec rake test TEST=plugins/your_plugin_test.rb
 - **Environment variables:** UPPERCASE_WITH_UNDERSCORES
 - **Commit messages:** `area: concise change` pattern (e.g., `Dockerfile: Update bashrc handling`), first line ≤72 chars
 
-## Release Process
+## CI/CD
 
-Tag a commit to trigger the GitHub Actions release workflow (`.github/workflows/release.yml`), which:
+Pushing changes to `docker/**` or `.github/workflows/release.yml` on `main`/`develop` triggers the GitHub Actions workflow (`.github/workflows/release.yml`), which:
 
-1. Runs `build_archive.sh` and uploads `dot_devcontainer.tgz` to the GitHub Release as a draft
-2. Builds all Docker images in `supported_versions.conf` for both `amd64` and `arm64` using native GitHub-hosted runners
-3. Merges the per-arch images into multi-arch manifests and pushes them to DockerHub
+1. Builds all Docker images in the matrix for both `amd64` and `arm64` using native GitHub-hosted runners
+2. Merges the per-arch images into multi-arch manifests and pushes them to DockerHub
 
 Build failures are notified via Slack (`SLACK_WEBHOOK_URL` secret).
 
