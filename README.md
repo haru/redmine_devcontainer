@@ -1,36 +1,70 @@
 # redmine_devcontainer
 
- This is a tool that builds a development environment for Redmine plugins using Github Codespaces or Visual Studio Code.
+A tool that builds a development environment for Redmine plugins using GitHub Codespaces or Visual Studio Code Dev Containers.
 
- ## How to setup
+## Supported versions
 
- ### If you already have your plugin code
+| Redmine | Ruby | Docker image tag |
+|---------|------|-----------------|
+| 6.1-stable | 3.2 | `haru/redmine_devcontainer:6.1-stable-ruby3.2` |
+| 6.1-stable | 3.3 | `haru/redmine_devcontainer:6.1-stable-ruby3.3` |
+| 6.1-stable | 3.4 | `haru/redmine_devcontainer:6.1-stable-ruby3.4` |
+| 6.0-stable | 3.1 | `haru/redmine_devcontainer:6.0-stable-ruby3.1` |
+| 6.0-stable | 3.2 | `haru/redmine_devcontainer:6.0-stable-ruby3.2` |
+| 6.0-stable | 3.3 | `haru/redmine_devcontainer:6.0-stable-ruby3.3` |
+| 5.1-stable | 3.0 | `haru/redmine_devcontainer:5.1-stable-ruby3.0` |
+| 5.1-stable | 3.1 | `haru/redmine_devcontainer:5.1-stable-ruby3.1` |
+| 5.1-stable | 3.2 | `haru/redmine_devcontainer:5.1-stable-ruby3.2` |
+| master | 3.2 | `haru/redmine_devcontainer:master-ruby3.2` |
+| master | 3.3 | `haru/redmine_devcontainer:master-ruby3.3` |
+| master | 3.4 | `haru/redmine_devcontainer:master-ruby3.4` |
 
-Download latest `dot_devcontainer.tgz` from https://github.com/haru/redmine_devcontainer/releases .
+All images are multi-arch (amd64 + arm64) and are built and pushed to DockerHub automatically via GitHub Actions.
+
+## How to set up
+
+### If you already have your plugin code
+
+Clone or download this repository, then run the following command to generate `dot_devcontainer.tgz`:
 
 ```shell
-$ cd root_directory_of_you_plugin
+$ bash dot_devcontainer/build_archive.sh
+```
+
+Copy `dot_devcontainer/dot_devcontainer.tgz` to your plugin directory and extract it:
+
+```shell
+$ cd root_directory_of_your_plugin
 $ tar xvfz dot_devcontainer.tgz
 ```
 
-Then, you can find a directory `.devcontainer` in your plugin directory.
-Commit and push to Github and open Github Codespaces.
+A `.devcontainer` directory will be created in your plugin directory.
 
-### If don't have your plugin yet
+#### Select the Redmine version
 
-Create new Github repository and open Github Codespaces.
+Edit `.devcontainer/docker-compose.yml` and set `REDMINE_VERSION` and `RUBY_VERSION` to match your target environment:
 
-Download latest `dot_devcontainer.tgz` from https://github.com/haru/redmine_devcontainer/releases .
+```yaml
+args:
+  RUBY_VERSION: "3.2"
+  REDMINE_VERSION: "6.1-stable"
+```
+
+Commit and push to GitHub, then open GitHub Codespaces (or reopen in VS Code Dev Container).
+
+### If you don't have your plugin yet
+
+1. Create a new GitHub repository and open GitHub Codespaces.
+2. Clone or download this repository and run `bash dot_devcontainer/build_archive.sh` to generate `dot_devcontainer.tgz`. Copy `dot_devcontainer/dot_devcontainer.tgz` to your plugin directory and extract it:
 
 ```shell
-$ cd root_directory_of_you_plugin
+$ cd root_directory_of_your_plugin
 $ tar xvfz dot_devcontainer.tgz
 ```
 
-Click `Full Rebuild Container`. 
-Then Open terminal and execute command below.
+3. Click `Full Rebuild Container`.
+4. Open a terminal and run:
 
 ```shell
-$ sh .devcontainer/plugin_generator.sh 
+$ sh .devcontainer/plugin_generator.sh
 ```
-
