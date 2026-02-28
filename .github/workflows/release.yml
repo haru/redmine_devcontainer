@@ -1,0 +1,236 @@
+name: build_archive
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - "docker/**"
+    tags:
+      - "**"
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/redmine_devcontainer
+jobs:
+  archive:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set version
+        id: version
+        run: |
+          REPOSITORY=$(echo ${{ github.repository }} | sed -e "s#.*/##")
+          VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
+          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "filename=$REPOSITORY-$VERSION" >> $GITHUB_ENV
+          echo "plugin=$REPOSITORY" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+      - name: Archive
+        run: |
+          sh -x dot_devcontainer/build_archive.sh
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: dot_devcontainer/dot_devcontainer.tgz
+
+  build-amd64:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - redmine: "5.1-stable"
+            ruby: "3.0"
+            debian: "bullseye"
+          - redmine: "5.1-stable"
+            ruby: "3.1"
+            debian: "bookworm"
+          - redmine: "5.1-stable"
+            ruby: "3.2"
+            debian: "trixie"
+          - redmine: "6.0-stable"
+            ruby: "3.1"
+            debian: "bookworm"
+          - redmine: "6.0-stable"
+            ruby: "3.2"
+            debian: "trixie"
+          - redmine: "6.0-stable"
+            ruby: "3.3"
+            debian: "trixie"
+          - redmine: "6.1-stable"
+            ruby: "3.2"
+            debian: "trixie"
+          - redmine: "6.1-stable"
+            ruby: "3.3"
+            debian: "trixie"
+          - redmine: "6.1-stable"
+            ruby: "3.4"
+            debian: "trixie"
+          - redmine: "master"
+            ruby: "3.2"
+            debian: "trixie"
+          - redmine: "master"
+            ruby: "3.3"
+            debian: "trixie"
+          - redmine: "master"
+            ruby: "3.4"
+            debian: "trixie"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push amd64 image
+        uses: docker/build-push-action@v6
+        with:
+          context: docker/
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ matrix.redmine }}-ruby${{ matrix.ruby }}-amd64
+          build-args: |
+            REDMINE_VERSION=${{ matrix.redmine }}
+            RUBY=${{ matrix.ruby }}
+            DEBIAN=${{ matrix.debian }}
+
+  build-arm64:
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - redmine: "5.1-stable"
+            ruby: "3.0"
+            debian: "bullseye"
+          - redmine: "5.1-stable"
+            ruby: "3.1"
+            debian: "bookworm"
+          - redmine: "5.1-stable"
+            ruby: "3.2"
+            debian: "trixie"
+          - redmine: "6.0-stable"
+            ruby: "3.1"
+            debian: "bookworm"
+          - redmine: "6.0-stable"
+            ruby: "3.2"
+            debian: "trixie"
+          - redmine: "6.0-stable"
+            ruby: "3.3"
+            debian: "trixie"
+          - redmine: "6.1-stable"
+            ruby: "3.2"
+            debian: "trixie"
+          - redmine: "6.1-stable"
+            ruby: "3.3"
+            debian: "trixie"
+          - redmine: "6.1-stable"
+            ruby: "3.4"
+            debian: "trixie"
+          - redmine: "master"
+            ruby: "3.2"
+            debian: "trixie"
+          - redmine: "master"
+            ruby: "3.3"
+            debian: "trixie"
+          - redmine: "master"
+            ruby: "3.4"
+            debian: "trixie"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push arm64 image
+        uses: docker/build-push-action@v6
+        with:
+          context: docker/
+          platforms: linux/arm64
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ matrix.redmine }}-ruby${{ matrix.ruby }}-arm64
+          build-args: |
+            REDMINE_VERSION=${{ matrix.redmine }}
+            RUBY=${{ matrix.ruby }}
+            DEBIAN=${{ matrix.debian }}
+
+  merge-manifest:
+    runs-on: ubuntu-latest
+    needs: [build-amd64, build-arm64]
+    strategy:
+      matrix:
+        include:
+          - redmine: "5.1-stable"
+            ruby: "3.0"
+          - redmine: "5.1-stable"
+            ruby: "3.1"
+          - redmine: "5.1-stable"
+            ruby: "3.2"
+          - redmine: "6.0-stable"
+            ruby: "3.1"
+          - redmine: "6.0-stable"
+            ruby: "3.2"
+          - redmine: "6.0-stable"
+            ruby: "3.3"
+          - redmine: "6.1-stable"
+            ruby: "3.2"
+          - redmine: "6.1-stable"
+            ruby: "3.3"
+          - redmine: "6.1-stable"
+            ruby: "3.4"
+          - redmine: "master"
+            ruby: "3.2"
+          - redmine: "master"
+            ruby: "3.3"
+          - redmine: "master"
+            ruby: "3.4"
+    steps:
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Create and push multi-arch manifest
+        run: |
+          TAG="${{ env.IMAGE_NAME }}:${{ matrix.redmine }}-ruby${{ matrix.ruby }}"
+          docker buildx imagetools create \
+            -t "${TAG}" \
+            "${TAG}-amd64" \
+            "${TAG}-arm64"
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    needs: [build-amd64, build-arm64, merge-manifest]
+    if: failure()
+    steps:
+      - name: Notify Slack on failure
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": ":x: Docker build failed",
+              "attachments": [
+                {
+                  "color": "danger",
+                  "fields": [
+                    { "title": "Repository", "value": "${{ github.repository }}", "short": true },
+                    { "title": "Branch/Tag",  "value": "${{ github.ref_name }}",   "short": true },
+                    { "title": "Workflow",    "value": "${{ github.workflow }}",   "short": true },
+                    { "title": "Run URL",     "value": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }
+                  ]
+                }
+              ]
+            }
