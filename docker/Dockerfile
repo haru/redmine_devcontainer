@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y build-essential \
     curl \
     less \
     bash-completion \
+    ripgrep \
     && apt-get clean \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
