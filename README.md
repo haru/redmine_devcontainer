@@ -6,7 +6,6 @@ A tool that builds a development environment for Redmine plugins using GitHub Co
 
 | Redmine | Ruby | Docker image tag |
 |---------|------|-----------------|
-| master | 4.1 | `haru/redmine_devcontainer:master-ruby4.1` |
 | master | 4.0 | `haru/redmine_devcontainer:master-ruby4.0` |
 | master | 3.4 | `haru/redmine_devcontainer:master-ruby3.4` |
 | master | 3.3 | `haru/redmine_devcontainer:master-ruby3.3` |
