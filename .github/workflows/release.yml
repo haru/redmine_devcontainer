@@ -35,10 +35,10 @@ jobs:
             {"redmine":"7.0-stable","ruby":"3.3","debian":"trixie"},
             {"redmine":"7.0-stable","ruby":"3.4","debian":"trixie"},
             {"redmine":"7.0-stable","ruby":"4.0","debian":"trixie"},
-            {"redmine":"master","ruby":"3.2","debian":"trixie"},
             {"redmine":"master","ruby":"3.3","debian":"trixie"},
             {"redmine":"master","ruby":"3.4","debian":"trixie"},
-            {"redmine":"master","ruby":"4.0","debian":"trixie"}
+            {"redmine":"master","ruby":"4.0","debian":"trixie"},
+            {"redmine":"master","ruby":"4.1","debian":"trixie"}
           ]}
           HEREDOC
             echo 'EOF'
