@@ -6,18 +6,19 @@ A tool that builds a development environment for Redmine plugins using GitHub Co
 
 | Redmine | Ruby | Docker image tag |
 |---------|------|-----------------|
-| 6.1-stable | 3.2 | `haru/redmine_devcontainer:6.1-stable-ruby3.2` |
-| 6.1-stable | 3.3 | `haru/redmine_devcontainer:6.1-stable-ruby3.3` |
-| 6.1-stable | 3.4 | `haru/redmine_devcontainer:6.1-stable-ruby3.4` |
-| 6.0-stable | 3.1 | `haru/redmine_devcontainer:6.0-stable-ruby3.1` |
-| 6.0-stable | 3.2 | `haru/redmine_devcontainer:6.0-stable-ruby3.2` |
-| 6.0-stable | 3.3 | `haru/redmine_devcontainer:6.0-stable-ruby3.3` |
-| 5.1-stable | 3.0 | `haru/redmine_devcontainer:5.1-stable-ruby3.0` |
-| 5.1-stable | 3.1 | `haru/redmine_devcontainer:5.1-stable-ruby3.1` |
-| 5.1-stable | 3.2 | `haru/redmine_devcontainer:5.1-stable-ruby3.2` |
-| master | 3.2 | `haru/redmine_devcontainer:master-ruby3.2` |
-| master | 3.3 | `haru/redmine_devcontainer:master-ruby3.3` |
+| master | 4.0 | `haru/redmine_devcontainer:master-ruby4.0` |
 | master | 3.4 | `haru/redmine_devcontainer:master-ruby3.4` |
+| master | 3.3 | `haru/redmine_devcontainer:master-ruby3.3` |
+| 7.0-stable | 4.0 | `haru/redmine_devcontainer:7.0-stable-ruby4.0` |
+| 7.0-stable | 3.4 | `haru/redmine_devcontainer:7.0-stable-ruby3.4` |
+| 7.0-stable | 3.3 | `haru/redmine_devcontainer:7.0-stable-ruby3.3` |
+| 7.0-stable | 3.2 | `haru/redmine_devcontainer:7.0-stable-ruby3.2` |
+| 6.1-stable | 3.4 | `haru/redmine_devcontainer:6.1-stable-ruby3.4` |
+| 6.1-stable | 3.3 | `haru/redmine_devcontainer:6.1-stable-ruby3.3` |
+| 6.1-stable | 3.2 | `haru/redmine_devcontainer:6.1-stable-ruby3.2` |
+| 6.0-stable | 3.3 | `haru/redmine_devcontainer:6.0-stable-ruby3.3` |
+| 6.0-stable | 3.2 | `haru/redmine_devcontainer:6.0-stable-ruby3.2` |
+| 6.0-stable | 3.1 | `haru/redmine_devcontainer:6.0-stable-ruby3.1` |
 
 All images are multi-arch (amd64 + arm64) and are built and pushed to DockerHub automatically via GitHub Actions.
 
